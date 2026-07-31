@@ -1,6 +1,7 @@
 using LibraryManagement.Api.Services;
 using LibraryManagement.API.Data;
 using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<BookService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -4,51 +4,108 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Api.Services;
 
-
 public class BookService
 {
     private readonly LibraryDbContext _context;
+    private readonly ILogger<BookService> _logger;
 
-    public BookService(LibraryDbContext context)
+    public BookService(
+        LibraryDbContext context,
+        ILogger<BookService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
-    public List<Book> GetAll()
+    public async Task<List<Book>> GetAllAsync()
     {
-        return _context.Books.ToList();
+        _logger.LogInformation("Retrieving all books.");
+
+        var books = await _context.Books.ToListAsync();
+
+        _logger.LogInformation(
+            "Retrieved {BookCount} books.",
+            books.Count);
+
+        return books;
     }
 
-    public Book? GetById(int id)
+    public async Task<Book?> GetByIdAsync(int id)
     {
-        return _context.Books
-            .FirstOrDefault(x => x.Id == id);
-    }
-   
-    public void Add(Book book)
-    {
-        _context.Books.Add(book);
-        _context.SaveChanges();
-    }
+        _logger.LogInformation(
+            "Retrieving book with ID {BookId}.",
+            id);
 
-    public Book Update(Book book)
-    {
-        _context.Books.Update(book);
-        _context.SaveChanges();
+        var book = await _context.Books
+            .FirstOrDefaultAsync(book => book.Id == id);
+
+        if (book == null)
+        {
+            _logger.LogWarning(
+                "Book with ID {BookId} was not found.",
+                id);
+        }
 
         return book;
     }
 
-    public void Delete(int id)
+    public async Task<Book> AddAsync(Book book)
     {
-        var book = _context.Books
-            .FirstOrDefault(x => x.Id == id);
+        _logger.LogInformation(
+            "Creating book with title {BookTitle}.",
+            book.Title);
 
-        if (book != null)
-        {
-            _context.Books.Remove(book);
-            _context.SaveChanges();
-        }
+        _context.Books.Add(book);
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation(
+            "Created book with ID {BookId}.",
+            book.Id);
+
+        return book;
     }
 
+    public async Task<Book> UpdateAsync(Book book)
+    {
+        _logger.LogInformation(
+            "Updating book with ID {BookId}.",
+            book.Id);
+
+        _context.Books.Update(book);
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation(
+            "Updated book with ID {BookId}.",
+            book.Id);
+
+        return book;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        _logger.LogInformation(
+            "Deleting book with ID {BookId}.",
+            id);
+
+        var book = await _context.Books
+            .FirstOrDefaultAsync(book => book.Id == id);
+
+        if (book == null)
+        {
+            _logger.LogWarning(
+                "Cannot delete book with ID {BookId} because it was not found.",
+                id);
+
+            return false;
+        }
+
+        _context.Books.Remove(book);
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation(
+            "Deleted book with ID {BookId}.",
+            id);
+
+        return true;
+    }
 }
