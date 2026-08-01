@@ -1,7 +1,8 @@
+using LibraryManagement.Api.Middleware;
 using LibraryManagement.Api.Services;
 using LibraryManagement.API.Data;
+using LibraryManagement.API.Mappings;
 using Microsoft.EntityFrameworkCore;
-using LibraryManagement.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,9 +26,15 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddAutoMapper(
+    cfg => { },
+    typeof(MappingProfile));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 builder.Services.AddScoped<BookService>();
 
