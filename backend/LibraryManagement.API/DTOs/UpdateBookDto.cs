@@ -14,7 +14,9 @@ namespace LibraryManagement.API.DTOs
 
 
         [Required]
-        [StringLength(20)]
+        [RegularExpression(
+        "^(Available|Borrowed)$",
+        ErrorMessage = "Status must be either Available or Borrowed.")]
         public string Status { get; set; } = "";
     }
 }

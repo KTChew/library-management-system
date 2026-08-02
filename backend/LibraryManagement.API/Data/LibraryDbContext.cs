@@ -1,4 +1,5 @@
-﻿using LibraryManagement.API.Models;
+﻿using LibraryManagement.API.Enums;
+using LibraryManagement.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.API.Data
@@ -17,13 +18,17 @@ namespace LibraryManagement.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Book>()
+            .Property(book => book.Status)
+            .HasConversion<string>();
+
             modelBuilder.Entity<Book>().HasData(
                new Book
                {
                    Id = 1,
                    Title = "Clean Code",
                    Author = "Robert C. Martin",
-                   Status = "Available"
+                   Status = BookStatus.Available
                },
 
                new Book
@@ -31,7 +36,7 @@ namespace LibraryManagement.API.Data
                    Id = 2,
                    Title = "Domain-Driven Design",
                    Author = "Eric Evans",
-                   Status = "Borrowed"
+                   Status = BookStatus.Borrowed
                },
 
                new Book
@@ -39,7 +44,7 @@ namespace LibraryManagement.API.Data
                    Id = 3,
                    Title = "The Pragmatic Programmer",
                    Author = "Andy Hunt",
-                   Status = "Available"
+                   Status = BookStatus.Available
                }
            );
         }

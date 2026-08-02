@@ -1,4 +1,6 @@
-﻿namespace LibraryManagement.API.Models
+﻿using LibraryManagement.API.Enums;
+
+namespace LibraryManagement.API.Models
 {
     public class Book
     {
@@ -8,6 +10,6 @@
 
         public string Author { get; set; } = "";
 
-        public string Status { get; set; } = "";
+        public BookStatus Status { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using LibraryManagement.API.DTOs;
 using LibraryManagement.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using LibraryManagement.API.Enums;
 
 namespace LibraryManagement.Api.Controllers;
 
@@ -51,7 +52,7 @@ public class BooksController : ControllerBase
         var book = _mapper.Map<Book>(dto);
 
         // Business rule: every new book begins as available.
-        book.Status = "Available";
+        book.Status = BookStatus.Available;
 
         var createdBook = await _bookService.AddAsync(book);
 
