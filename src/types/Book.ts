@@ -17,3 +17,8 @@ export interface UpdateBookInput {
   author: string;
   status: BookStatus;
 }
+
+export type BookFilter =
+    | "ALL"
+    | "AVAILABLE"
+    | "BORROWED";
